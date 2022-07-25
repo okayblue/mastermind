@@ -25,20 +25,11 @@ class CodeMaker
   end
 
   def hint(guess)
-    hint = []
-    exact = []
-    other = []
-    # hint legend: '*' = correct number in correct spot, '=' = correct number in incorrect spot
-    guess.split('').each_with_index do |num, index|
-      if code[index].eql?(num)
-        hint.push('*')
-        exact.push(num)
-      else
-        other.push(num)
-      end
-    end
-    other.each { |num| hint.push('=') if code.include?(num) && !exact.include?(num)}
-    puts hint.join(' ')
+    hint = ['', '', '', '']
+    # hint legend: '*' = correct number in correct spot, 'o' = correct number in incorrect spot
+    guess.split('').each_with_index { |num, index| hint.unshift('*').pop if code[index].eql?(num) }
+    guess.split('').uniq.each { |num| hint.unshift('o').pop if code.include?(num) }
+    puts "Hints: #{hint.join(' ')}"
   end
 end
 
