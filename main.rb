@@ -20,7 +20,29 @@ class CodeMaker
       p 'You figured out the secret code!'
     elsif guess != code
       puts 'Incorrect!'
+      hint(guess)
     end
+  end
+
+  def hint(guess)
+    hint = []
+    exact = []
+    other = []
+    # hint legend: '*' = correct number in correct spot, '=' = correct number in incorrect spot
+    guess.split('').each_with_index do |num, index|
+      if code[index].eql?(num)
+        hint.push('*')
+        exact.push(num)
+      else
+        other.push(num)
+      end
+    end
+    other.each_with_index do |num, index|
+      if code.include?(num) && !exact.include?(num)
+        hint.push('=')
+      end
+    end
+    puts hint.join(' ')
   end
 end
 
@@ -41,3 +63,11 @@ class CodeBreaker
     self.guess = guess_input
   end
 end
+
+codebreak = CodeBreaker.new
+make = CodeMaker.new
+
+make.cpu_select_code
+p make.code
+codebreak.code_guess
+make.guess_check(codebreak.guess)
