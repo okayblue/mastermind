@@ -16,19 +16,22 @@ class CodeMaker
   end
 
   def guess_check(guess)
+    win = false
     if guess == code
       p 'You figured out the secret code!'
+      win = true
     elsif guess != code
       puts 'Incorrect!'
       hint(guess)
     end
+    win
   end
 
   def hint(guess)
     hint = ['', '', '', '']
     # hint legend: '*' = correct number in correct spot, 'o' = correct number in incorrect spot
     guess.split('').each_with_index { |num, index| hint.unshift('*').pop if code[index].eql?(num) }
-    guess.split('').uniq.each { |num| hint.unshift('o').pop if code.include?(num) }
+    guess.split('').uniq.each { |num| hint.unshift('o').pop if code.include?(num) &&  hint[-1] == '' }
     puts "Hints: #{hint.join(' ')}"
   end
 end
@@ -51,10 +54,41 @@ class CodeBreaker
   end
 end
 
-codebreak = CodeBreaker.new
-make = CodeMaker.new
+class Game
+  attr_reader :breaker, :maker
+  attr_accessor :turns
+  def initialize
+    @breaker = CodeBreaker.new
+    @maker = CodeMaker.new
+    @turns = 12
+  end
 
-make.cpu_select_code
-p make.code
-codebreak.code_guess
-make.guess_check(codebreak.guess)
+  def play_game
+    puts "Welcome to mastermind!\n"
+    maker.cpu_select_code
+    puts maker.code
+    until turns.zero?
+      breaker.code_guess
+      break if maker.guess_check(breaker.guess)
+      self.turns -= 1
+      puts "turns left: #{turns}"
+      puts "The CodeMaker wins! The secret code was #{maker.code}" if turns.zero?
+    end
+  end
+
+  def play_again
+    puts 'Play again? (Y/N)'
+    newgame = ''
+    until newgame.downcase == 'y' or newgame.downcase == 'n'
+      newgame = gets.chomp
+    end
+    newgame
+  end
+end
+
+loop do
+  game = Game.new
+  game.play_game
+  next if game.play_again == 'y'
+  break
+end
