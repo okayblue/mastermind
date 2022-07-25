@@ -37,11 +37,7 @@ class CodeMaker
         other.push(num)
       end
     end
-    other.each_with_index do |num, index|
-      if code.include?(num) && !exact.include?(num)
-        hint.push('=')
-      end
-    end
+    other.each { |num| hint.push('=') if code.include?(num) && !exact.include?(num)}
     puts hint.join(' ')
   end
 end
