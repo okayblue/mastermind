@@ -74,6 +74,7 @@ class Game
       puts "turns left: #{turns}"
       puts "The CodeMaker wins! The secret code was #{maker.code}" if turns.zero?
     end
+    play_again
   end
 
   def play_again
@@ -82,13 +83,12 @@ class Game
     until newgame.downcase == 'y' or newgame.downcase == 'n'
       newgame = gets.chomp
     end
-    newgame
+    if newgame == 'y'
+      game = Game.new
+      game.play_game
+    end
   end
 end
 
-loop do
-  game = Game.new
-  game.play_game
-  next if game.play_again == 'y'
-  break
-end
+game = Game.new
+game.play_game
