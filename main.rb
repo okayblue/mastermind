@@ -28,11 +28,19 @@ class CodeMaker
   end
 
   def hint(guess)
+    correct_num = ['', '', '', '']
     hint = ['', '', '', '']
-    # hint legend: '*' = correct number in correct spot, 'o' = correct number in incorrect spot
-    guess.split('').each_with_index { |num, index| hint.unshift('*').pop if code[index].eql?(num) }
-    guess.split('').uniq.each { |num| hint.unshift('o').pop if code.include?(num) &&  hint[-1] == '' }
-    puts "Hints: #{hint.join(' ')}"
+    # # hint legend: '*' = correct number in correct spot, 'o' = correct number in incorrect spot
+    guess.split('').each_with_index do |num, index|
+      if code[index].eql?(num)
+        hint.unshift('*').pop
+        correct_num.unshift(num).pop
+      end
+    end
+    guess.split('').uniq.each_with_index do |num, index| 
+      hint.unshift('o').pop if !correct_num.slice(0..index - 1).include?(num) && code.include?(num)
+    end
+    puts "Hint: #{hint.join}"
   end
 end
 
