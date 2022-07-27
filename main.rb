@@ -73,16 +73,25 @@ class Game
 
   def play_game
     puts "Welcome to mastermind!\n"
-    maker.cpu_select_code
-    puts maker.code
-    until turns.zero?
-      breaker.code_guess
-      break if maker.guess_check(breaker.guess)
-      self.turns -= 1
-      puts "turns left: #{turns}"
-      puts "The CodeMaker wins! The secret code was #{maker.code}" if turns.zero?
+    selection = ''
+    until selection == '1' || selection == '2'
+      puts "Want to be the code breaker[1] or code maker[2]?"
+      selection = gets.chomp
     end
-    play_again
+    if selection == '1'
+      maker.cpu_select_code
+      puts maker.code
+      until turns.zero?
+        breaker.code_guess
+        break if maker.guess_check(breaker.guess)
+        self.turns -= 1
+        puts "turns left: #{turns}"
+        puts "The CodeMaker wins! The secret code was #{maker.code}" if turns.zero?
+      end
+      play_again
+    elsif selection == '2'
+      puts 'alright'
+    end
   end
 
   def play_again
