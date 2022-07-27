@@ -22,7 +22,6 @@ class CodeMaker
       win = true
     elsif guess != code
       puts 'Incorrect!'
-      hint(guess)
     end
     win
   end
@@ -46,10 +45,15 @@ end
 
 class CodeBreaker
   include Choices
-  attr_accessor :guess
+  attr_accessor :guess, :possible_choices
 
   def initialize
     @guess = 0
+    @possible_choices = []
+  end
+
+  def get_choices
+    CODE_CHOICES.repeated_permutation(4) { |p| possible_choices.push(p) }
   end
 
   def code_guess
@@ -84,13 +88,14 @@ class Game
       until turns.zero?
         breaker.code_guess
         break if maker.guess_check(breaker.guess)
+        maker.hint(breaker.guess)
         self.turns -= 1
         puts "turns left: #{turns}"
         puts "The CodeMaker wins! The secret code was #{maker.code}" if turns.zero?
       end
       play_again
     elsif selection == '2'
-      puts 'alright'
+      breaker.get_choices
     end
   end
 
