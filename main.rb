@@ -30,6 +30,10 @@ class CodeMaker
     win
   end
 
+  def cpu_guess_check
+    #
+  end
+
   def hint(guess)
     correct_num = ['', '', '', '']
     hint = ['', '', '', '']
@@ -70,7 +74,8 @@ class CodeBreaker
   end
 
   def cpu_code_guess
-    
+    self.guess = possible_choices.sample
+    p "Cpu guess: #{guess.join('')}"
   end
 end
 
@@ -98,6 +103,14 @@ class Game
   end
 
   def code_maker_game
+    breaker.get_choices
+    puts "Select a secret code (4 numbers, each can be numbers 1-6"
+    maker.player_select_code
+    until turns.zero?
+      breaker.cpu_code_guess
+      maker.cpu_guess_check
+      self.turns -= 1
+    end
     play_again
   end
 
