@@ -15,6 +15,10 @@ class CodeMaker
     puts 'The secret code has been chosen'
   end
 
+  def player_select_code
+    self.code = gets.chomp
+  end
+
   def guess_check(guess)
     win = false
     if guess == code
@@ -64,6 +68,10 @@ class CodeBreaker
     end
     self.guess = guess_input
   end
+
+  def cpu_code_guess
+    
+  end
 end
 
 class Game
@@ -75,6 +83,24 @@ class Game
     @turns = 12
   end
 
+  def code_breaker_game
+    maker.cpu_select_code
+    puts maker.code
+    until turns.zero?
+      breaker.code_guess
+      break if maker.guess_check(breaker.guess)
+      maker.hint(breaker.guess)
+      self.turns -= 1
+      puts "turns left: #{turns}"
+      puts "The CodeMaker wins! The secret code was #{maker.code}" if turns.zero?
+    end
+    play_again
+  end
+
+  def code_maker_game
+    play_again
+  end
+
   def play_game
     puts "Welcome to mastermind!\n"
     selection = ''
@@ -82,21 +108,13 @@ class Game
       puts "Want to be the code breaker[1] or code maker[2]?"
       selection = gets.chomp
     end
+
     if selection == '1'
-      maker.cpu_select_code
-      puts maker.code
-      until turns.zero?
-        breaker.code_guess
-        break if maker.guess_check(breaker.guess)
-        maker.hint(breaker.guess)
-        self.turns -= 1
-        puts "turns left: #{turns}"
-        puts "The CodeMaker wins! The secret code was #{maker.code}" if turns.zero?
-      end
-      play_again
+      code_breaker_game
     elsif selection == '2'
-      breaker.get_choices
+      code_maker_game
     end
+
   end
 
   def play_again
