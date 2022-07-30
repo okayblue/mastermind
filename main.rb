@@ -22,7 +22,7 @@ class CodeMaker
   def guess_check(guess)
     win = false
     if guess == code
-      p 'You figured out the secret code!'
+      puts 'You figured out the secret code!'
       win = true
     elsif guess != code
       puts 'Incorrect!'
@@ -30,8 +30,15 @@ class CodeMaker
     win
   end
 
-  def cpu_guess_check
-    #
+  def cpu_guess_check(guess)
+    win = false
+    if guess.join('') == code
+      puts 'Cpu figured out the secret code!'
+      win = true
+    elsif guess != code
+      puts 'Incorrect!'
+    end
+    win
   end
 
   def hint(guess)
@@ -90,10 +97,10 @@ class Game
 
   def code_breaker_game
     maker.cpu_select_code
-    puts maker.code
     until turns.zero?
       breaker.code_guess
       break if maker.guess_check(breaker.guess)
+
       maker.hint(breaker.guess)
       self.turns -= 1
       puts "turns left: #{turns}"
@@ -107,8 +114,16 @@ class Game
     puts "Select a secret code (4 numbers, each can be numbers 1-6"
     maker.player_select_code
     until turns.zero?
+      sleep(1)
       breaker.cpu_code_guess
-      maker.cpu_guess_check
+      break if maker.cpu_guess_check(breaker.guess)
+
+      breaker.guess.each_with_index do |item, index|
+        if item != maker.code[index]
+          breaker.possible_choices = breaker.possible_choices.compact.reject { |arr| arr[index] == item }
+        end
+      end
+
       self.turns -= 1
     end
     play_again
@@ -127,7 +142,6 @@ class Game
     elsif selection == '2'
       code_maker_game
     end
-
   end
 
   def play_again
